@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MBTI人格测试</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===========================
+     封面页
+============================= -->
+<div id="page-intro" class="page active">
+    <!-- 装饰圆 -->
+    <div class="intro-deco"></div>
+    <div class="intro-logo">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="22" stroke="white" stroke-width="2" stroke-dasharray="6 4"/>
+            <circle cx="24" cy="16" r="6" fill="white" opacity="0.9"/>
+            <path d="M16 36 C16 30, 32 30, 32 36" stroke="white" stroke-width="2" fill="none" opacity="0.9"/>
+        </svg>
+    </div>
+    <div class="intro-title">MBTI</div>
+    <div class="intro-subtitle">探索你的人格类型<br>发现真实的自己</div>
+    <div class="intro-meta">
+        <div class="intro-meta-item">📝 60道题</div>
+        <div class="intro-meta-item">⏱ 约10分钟</div>
+        <div class="intro-meta-item">🎯 4个选项</div>
+    </div>
+    <button class="btn-start" onclick="initQuiz()">开始测试</button>
+    <p class="intro-tip">选择最符合你的第一直觉的选项</p>
+</div>
+
+
+<!-- ===========================
+     答题页
+============================= -->
+<div id="page-quiz" class="page">
+
+    <div class="quiz-header">
+        <div class="quiz-header-top">
+            <button class="quiz-back" onclick="retryQuiz()">← 返回</button>
+            <span class="quiz-counter" id="counter-text">1 / 60</span>
+            <span class="quiz-dimension-tag" id="dim-tag">🌐 能量来源</span>
+        </div>
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+    </div>
+
+    <div class="quiz-body">
+        <div class="question-card">
+            <div class="question-number" id="q-number">第 1 题</div>
+            <div class="question-text" id="q-text"></div>
+        </div>
+
+        <!-- 装饰线条 -->
+        <div class="q-deco-line"></div>
+
+        <!-- 4个选项 -->
+        <div class="options-wrap" id="options-wrap">
+            <button class="option-btn" id="opt-A" onclick="selectOption('A')">
+                <span class="opt-label">A</span>
+                <span class="opt-text"></span>
+            </button>
+            <button class="option-btn" id="opt-B" onclick="selectOption('B')">
+                <span class="opt-label">B</span>
+                <span class="opt-text"></span>
+            </button>
+            <button class="option-btn" id="opt-C" onclick="selectOption('C')">
+                <span class="opt-label">C</span>
+                <span class="opt-text"></span>
+            </button>
+            <button class="option-btn" id="opt-D" onclick="selectOption('D')">
+                <span class="opt-label">D</span>
+                <span class="opt-text"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="quiz-nav">
+        <button class="btn-prev" id="btn-prev" onclick="goPrev()" disabled>上一题</button>
+        <button class="btn-next" id="btn-next" onclick="goNext()" disabled>下一题</button>
+    </div>
+
+</div>
+
+
+<!-- ===========================
+     加载页
+============================= -->
+<div id="page-loading" class="page">
+    <div class="loading-brain">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="30" stroke="white" stroke-width="2" opacity="0.3"/>
+            <circle cx="40" cy="33" r="12" stroke="white" stroke-width="2" fill="none"/>
+            <path d="M20 62 C20 52, 60 52, 60 62" stroke="white" stroke-width="2" fill="none" opacity="0.8"/>
+            <path d="M25 40 L30 45 L25 50" stroke="white" stroke-width="1.5" fill="none"/>
+            <path d="M55 40 L50 45 L55 50" stroke="white" stroke-width="1.5" fill="none"/>
+            <circle cx="35" cy="30" r="2" fill="white"/>
+            <circle cx="45" cy="30" r="2" fill="white"/>
+        </svg>
+    </div>
+    <div class="loading-spinner"></div>
+    <div class="loading-title">正在分析你的人格…</div>
+</div>
+
+
+<!-- ===========================
+     结果页
+============================= -->
+<div id="page-result" class="page">
+
+    <div class="result-hero" id="result-hero">
+        <span class="result-emoji" id="result-emoji">🧠</span>
+        <div class="result-type-badge" id="result-type">INTJ</div>
+        <div class="result-type-name" id="result-name">策略家</div>
+        <div class="result-type-nickname" id="result-nickname">独立思考的建筑师</div>
+    </div>
+
+    <div class="result-scroll" id="result-scroll">
+
+        <div class="result-card">
+            <div class="result-card-title">📊 维度偏好</div>
+            <div id="dim-bars"></div>
+        </div>
+
+        <div class="result-card">
+            <div class="result-card-title">📖 人格概述</div>
+            <div class="result-desc" id="result-desc"></div>
+            <div class="trait-tags" id="result-tags"></div>
+        </div>
+
+        <div class="result-card">
+            <div class="result-card-title">💪 核心优势</div>
+            <div class="result-desc" id="result-strengths"></div>
+        </div>
+
+        <div class="result-card">
+            <div class="result-card-title">🌱 成长方向</div>
+            <div class="result-desc" id="result-growth"></div>
+        </div>
+
+        <div class="result-card">
+            <div class="result-card-title">💼 适合职业</div>
+            <div class="result-desc" id="result-careers"></div>
+        </div>
+
+        <div class="result-card">
+            <div class="result-card-title">💞 人格匹配</div>
+            <div class="match-list" id="result-matches"></div>
+        </div>
+
+    </div>
+
+    <div class="result-footer">
+        <button class="btn-retry" onclick="retryQuiz()">重新测试</button>
+        <p class="tip-text">结果仅供参考，人格是多元且动态的</p>
+    </div>
+
+</div>
+
+
+<script src="js/questions.js"></script>
+<script src="js/results.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
